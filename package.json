@@ -1,6 +1,6 @@
 {
   "name": "js-el",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "description": "JSEL.",
   "keywords": ["expression","parser","javascript"],
   "author": "jindw <jindw@xidea.org> (http://www.xidea.org)",

@@ -6,10 +6,21 @@
  * @version $Id: template.js,v 1.4 2008/02/28 14:39:06 jindw Exp $
  */
 
-var ID_PATTERN = /^[a-zA-Z_\$][_\$\w]*$/;
-var NUMBER_CALL = /^(\d+)(\.\w+)$/;
+//var ID_PATTERN = /^[a-zA-Z_\$][_\$\w]*$/;
+var ID_PATTERN_QUTE = /^"[a-zA-Z_\$][_\$\w]*"$/;
+var NUMBER_CALL = /^(\d+)(\.\w+)$/;//10.0.toString(2), 10.toString(2)
 var PRESERVED = /^(break|case|catch|continue|default|delete|do|else|finally|for|function|if|in|instanceof|new|return|switch|throw|try|typeof|var|void|while|with|class|const|debugger|enum|export|extends|import|super)$/
-
+var defaultContext = {
+	getForName:String,
+	findForAttribute:function(varName,propertyName){},
+	genGetCode:function(owner,property){
+		if(ID_PATTERN_QUTE.test(property)){
+			return owner+'.'+property.slice(1,-1);
+		}else{
+			return owner+'['+property+']';
+		}
+	}
+}
 /**
  * 将某一个token转化为表达式
  */
@@ -35,7 +46,7 @@ function stringifyValue(el,context){
     case VALUE_VAR:
     	//console.log(PRESERVED.test(param),param)
     	if(param == 'for'){
-    		var f = context && context.getForName();
+    		var f = context.getForName();
     		if(f){
     			return f;
     		}
@@ -44,11 +55,45 @@ function stringifyValue(el,context){
     	}else{
     		
     	}
-    	return param;
+    	return context.getVarName(param) ;
     case VALUE_LIST:
     	return "[]";
     case VALUE_MAP:
     	return "{}";
+	}
+}
+
+function stringifyGetter(context,el){
+	var el1 = el[1];
+	var el2 = el[2];
+	var value1 = stringifyJSEL(el1,context);
+	var value2 = stringifyJSEL(el2,context);
+	if(el2[0] == VALUE_CONSTANTS){
+		var p = getTokenParam(el[2])
+		if(typeof p == 'string'){
+			if(p == 'index' || p == 'lastIndex'){
+				var forAttr = context.findForAttribute(value1,p);
+				if(forAttr){
+					return forAttr;
+				}
+			}
+		}
+	}
+	//safe check
+	//return __get__(value1,value2)
+	//default impl(without safy check)
+	value1 = addELQute(el,el1,value1)
+	return context.genGetCode(value1,value2);
+}
+function stringifyPropertyCall(context,propertyEL,callArguments){
+	var value1 = stringifyGetter(context,propertyEL);
+	var value2 = stringifyJSEL(callArguments,context);
+	if(value1.match(/\)$/)){
+		//safe property call
+		return value1.slice(0,-1)+','+value2+')'
+	}else{
+		value1 = value1.replace(NUMBER_CALL,'($1)$2')//void 10.toString(2) error!!
+		return value1+"("+value2.slice(1,-1)+')';
 	}
 }
 /**
@@ -56,33 +101,24 @@ function stringifyValue(el,context){
  */
 function stringifyInfix(el,context){
 	var type = el[0];
+	var el1 = el[1];
+	var el2 = el[2];
+	if(type == OP_GET){
+		return stringifyGetter(context,el);
+	}else if(type == OP_INVOKE && el1[0] == OP_GET){
+		return stringifyPropertyCall(context,el1,el2);
+	}
 	var opc = findTokenText(el[0]);
-	var value1 = stringifyJSEL(el[1],context);
-	var value2 = stringifyJSEL(el[2],context);
+	var value1 = stringifyJSEL(el1,context);
+	var value2 = stringifyJSEL(el2,context);
 	//value1 = addELQute(el,el[1],value1);
 	switch(type){
 	case OP_INVOKE:
 		value2 = value2.slice(1,-1);
 		value1 = value1.replace(NUMBER_CALL,'($1)$2')
 		return value1+"("+value2+')';
-	case OP_GET:
-		//value1 = toOperatable(el[1][0],value1);
-		value1 = addELQute(el,el[1],value1)
-		if(el[2][0] == VALUE_CONSTANTS){
-			var p = getTokenParam(el[2])
-			if(typeof p == 'string'){
-				if(context && (p == 'index' || p == 'lastIndex')){
-					var forAttr = context.getForAttribute(value1,p);
-					if(forAttr){
-						return forAttr;
-					}
-				}
-				if(ID_PATTERN.test(p)){
-					return value1+'.'+p;
-				}
-			}
-		}
-		return value1+'['+value2+']';
+	//case OP_GET:
+		
 	case OP_JOIN:
 		if("[]"==value1){
 			return "["+value2+"]"
@@ -90,7 +126,7 @@ function stringifyInfix(el,context){
 			return value1.slice(0,-1)+','+value2+"]"
 		}
 	case OP_PUT:
-		value2 = stringifyJSON(getTokenParam(el))+":"+value2+"}";
+		value2 = JSON.stringify(getTokenParam(el))+":"+value2+"}";
 		if("{}"==value1){
 			return "{"+value2
 		}else{
@@ -110,13 +146,12 @@ function stringifyInfix(el,context){
  ${222+2|a?b1?b2:b3:c}
      */
      	//?:已经是最低优先级了,无需qute,而且javascript 递归?: 也无需优先级控制
-     	var el1 = el[1];
     	var test = stringifyJSEL(el1[1],context);
     	var value1 = stringifyJSEL(el1[2],context);
     	return test+'?'+value1+":"+value2;
 	}
-	value1 = addELQute(el,el[1],value1)
-	value2 = addELQute(el,el[2],null,value2)
+	value1 = addELQute(el,el1,value1)
+	value2 = addELQute(el,el2,null,value2)
 	return value1 + opc + value2;
 }
 /**
