@@ -62,7 +62,6 @@ var fns = {
 					var number = this.value.substr(this.start-1).match(/^\.\d+/)[0];
 					this.start+=number.length-1;//'.' skipped
 					this.addKeyOrObject(1*number, false);
-					console.log(number)
 				}else{
 					// if (this.value.startsWith(op, this.start))
 					this.parseOperator(op);
