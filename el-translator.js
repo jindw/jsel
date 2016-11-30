@@ -48,7 +48,7 @@ function stringifyValue(el,context){
     	if(param == 'for'){
     		var f = context.getForName();
     		if(f){
-    			return f;
+    			param = f;
     		}
     	//}else if(PRESERVED.test(param)){
     	//	return param+'__';
@@ -66,19 +66,18 @@ function stringifyValue(el,context){
 function stringifyGetter(context,el){
 	var el1 = el[1];
 	var el2 = el[2];
-	var value1 = stringifyJSEL(el1,context);
-	var value2 = stringifyJSEL(el2,context);
-	if(el2[0] == VALUE_CONSTANTS){
-		var p = getTokenParam(el[2])
-		if(typeof p == 'string'){
-			if(p == 'index' || p == 'lastIndex'){
-				var forAttr = context.findForAttribute(value1,p);
-				if(forAttr){
-					return forAttr;
-				}
+	if(el2[0] == VALUE_CONSTANTS && el1[0] == VALUE_VAR){
+		var varName = getTokenParam(el1)
+		var propertyName = getTokenParam(el2)
+		if(typeof propertyName == 'string'){
+			var forAttr = context.findForAttribute(varName,propertyName);
+			if(forAttr){
+				return forAttr;
 			}
 		}
 	}
+	var value1 = stringifyJSEL(el1,context);
+	var value2 = stringifyJSEL(el2,context);
 	//safe check
 	//return __get__(value1,value2)
 	//default impl(without safy check)

@@ -57,10 +57,18 @@ var fns = {
 				}
 			} else {
 				var op = this.findOperator();
-				// if (this.value.startsWith(op, this.start))
-				this.parseOperator(op);
-				if (op == null) {
-					this.parseError("未知操作符:");
+				//	
+				if( c=='.' && /\d/.test(this.value.charAt(this.start))){
+					var number = this.value.substr(this.start-1).match(/^\.\d+/)[0];
+					this.start+=number.length-1;//'.' skipped
+					this.addKeyOrObject(1*number, false);
+					console.log(number)
+				}else{
+					// if (this.value.startsWith(op, this.start))
+					this.parseOperator(op);
+					if (op == null) {
+						this.parseError("未知操作符:");
+					}
 				}
 			}
 			this.skipSpace(0);
