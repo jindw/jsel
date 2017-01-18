@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project name="js-el" default="package" basedir="./">
+
+	<target name="init">
+	</target>
+	<target name="compile">
+		<javac srcdir="java" fork="true" target="1.5" debug="true" destdir="bin" encoding="UTF-8">
+			<classpath>
+				<fileset dir="./">
+					<include name="**/*.jar" />
+				</fileset>
+			</classpath>
+		</javac>
+	</target>
+	<target name="package" depends="init,compile">
+		<jar destfile="bin/JSEL.jar" compress="true" encoding="UTF-8">
+			<fileset dir="bin">
+				<include name="org/xidea/el/**/*.class" />
+				<exclude name="**/*.js" />
+				<exclude name="**/test/**/*.*" />
+			</fileset>
+			<zipgroupfileset dir="./">
+				<include name="commons-logging*.jar" />
+			</zipgroupfileset>
+			<fileset dir="java">
+				<include name="org/xidea/el/*.java" />
+				<include name="org/xidea/el/json/*.java" />
+				<include name="org/xidea/el/impl/*.java" />
+				<exclude name="**/*.js" />
+				<exclude name="**/test/**/*.*" />
+			</fileset>
+		</jar>
+	</target>
+</project>

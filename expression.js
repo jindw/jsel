@@ -119,7 +119,7 @@ function _addKeyList(map,key,value){
 	return list;
 }
 Expression.prototype.toString = function(context){
-	return stringifyJSEL(this.token,context);
+	return stringifyJSEL(this.token,context||defaultContext);
 	//return JSON.stringify(this.token);
 }
 Expression.evaluate = evaluate;
@@ -255,9 +255,21 @@ function realValue(arg1){
     return arg1;
 }
 
-
-if(typeof require == 'function'){
-exports.Expression=Expression;
+var ID_PATTERN_QUTE = /^"[a-zA-Z_\$][_\$\w]*"$/;
+var defaultContext = {
+	getForName:String,
+	findForAttribute:function(varName,propertyName){},
+	getVarName:function(varName){
+		return varName;
+	},
+	genGetCode:function(owner,property){
+		if(ID_PATTERN_QUTE.test(property)){
+			return owner+'.'+property.slice(1,-1);
+		}else{
+			return owner+'['+property+']';
+		}
+	}
+}
 var stringifyJSEL = require('./el-translator.js').stringifyJSEL
 var ExpressionTokenizer=require('./expression-tokenizer').ExpressionTokenizer;
 var getTokenParam=require('./expression-token').getTokenParam;
@@ -291,4 +303,5 @@ var VALUE_CONSTANTS=require('./expression-token').VALUE_CONSTANTS;
 var VALUE_LIST=require('./expression-token').VALUE_LIST;
 var VALUE_MAP=require('./expression-token').VALUE_MAP;
 var VALUE_VAR=require('./expression-token').VALUE_VAR;
-}
+
+exports.Expression=Expression;

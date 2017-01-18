@@ -6,21 +6,10 @@
  * @version $Id: template.js,v 1.4 2008/02/28 14:39:06 jindw Exp $
  */
 
-//var ID_PATTERN = /^[a-zA-Z_\$][_\$\w]*$/;
-var ID_PATTERN_QUTE = /^"[a-zA-Z_\$][_\$\w]*"$/;
 var NUMBER_CALL = /^(\d+)(\.\w+)$/;//10.0.toString(2), 10.toString(2)
-var PRESERVED = /^(break|case|catch|continue|default|delete|do|else|finally|for|function|if|in|instanceof|new|return|switch|throw|try|typeof|var|void|while|with|class|const|debugger|enum|export|extends|import|super)$/
-var defaultContext = {
-	getForName:String,
-	findForAttribute:function(varName,propertyName){},
-	genGetCode:function(owner,property){
-		if(ID_PATTERN_QUTE.test(property)){
-			return owner+'.'+property.slice(1,-1);
-		}else{
-			return owner+'['+property+']';
-		}
-	}
-}
+//var PRESERVED = /^(break|case|catch|continue|default|delete|do|else|finally|for|function|if|in|instanceof|new|return|switch|throw|try|typeof|var|void|while|with|class|const|debugger|enum|export|extends|import|super)$/
+
+
 /**
  * 将某一个token转化为表达式
  */
