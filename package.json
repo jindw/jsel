@@ -6,7 +6,7 @@
   "author": "jindw <jindw@xidea.org> (http://www.xidea.org)",
   "homepage": "https://github.com/jindw/jsel",
   "repository": {"type": "git","url": "git://github.com/jindw/jsel.git"},
-  "main": "./expression.js",
+  "main": "./src/main/js/expression.js",
   "engines": {"node": ">=0.1"},
   "dependencies": {},
   "devDependencies": { "proof": "0.0.28" },

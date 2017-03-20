@@ -9,7 +9,7 @@ Install:
 Example:
 ====
 ```javascript
-var Expression = require('js-el').Expression;
+var Expression = require('js-el');
 var el = new Expression("(object.attr+x)+1+JSON.stringfy([c,d])")
 
 console.info(String(el))
