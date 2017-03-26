@@ -9,9 +9,8 @@ import org.xidea.el.impl.ReflectUtil;
 
 /**
  * 模拟ECMA262行为，保持基本一至，但迫于简单原则，略有偷懒行为^_^
- * 
+ * see org.mozilla.javascript.NativeGlobal
  * @author jindw
- * @see org.mozilla.javascript.NativeGlobal
  */
 public abstract class ECMA262Impl {
 	private final static Class<?>[] ARRAY_CLASSES = new Class[] { List.class,
@@ -66,10 +65,11 @@ public abstract class ECMA262Impl {
 	}
 
 	/**
-	 * @param value
-	 * @see <a
+	 * ECMA 标准ToBoolean 操作
+	 * <a
 	 *      href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">Ecma262</a>
-	 * @return
+	 * @param value 待转对象
+	 * @return 返回ECMA ToBoolean 操作结果
 	 */
 	public static boolean ToBoolean(Object value) {
 		if (value == null) {
@@ -86,12 +86,9 @@ public abstract class ECMA262Impl {
 		}
 	}
 
-	/**
-	 * @param arg1
-	 * @param force
+	/*
 	 * @see <a
 	 *      href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">Ecma262</a>
-	 * @return
 	 */
 	public static Number ToNumber(Object value) {
 		value = ToPrimitive(value, String.class);
@@ -136,12 +133,11 @@ public abstract class ECMA262Impl {
 
 	/**
 	 * 
-	 * @param <T>
-	 * @param value
-	 * @param expectedType
+	 * @param value 待转对象
+	 * @param expectedType 期待类型（不一定是返回类型）
 	 * @see <a
 	 *      href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">Ecma262</a>
-	 * @return <null|Number|Boolean|String>
+	 * @return type of {null|Number|Boolean|String}
 	 */
 	public static Object ToPrimitive(Object value, Class<?> expectedType) {
 		boolean toString;

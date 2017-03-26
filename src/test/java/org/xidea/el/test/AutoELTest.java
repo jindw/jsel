@@ -35,6 +35,7 @@ import org.xml.sax.SAXException;
 
 @RunWith(Parameterized.class)
 public class AutoELTest {
+
 	static ExpressionFactory expressionFactory = ExpressionFactoryImpl
 			.getInstance();
 
@@ -48,6 +49,8 @@ public class AutoELTest {
 	private Map<String, String> resultMap;
 
 	private String model;
+
+	private String fileName;
 
 	@Parameters
 	public static Collection<Object[]> getParams() {
@@ -64,7 +67,8 @@ public class AutoELTest {
 	}
 
 	// public AutoTest(){}
-	public AutoELTest(String source,String model,boolean isJSONResult) {
+	public AutoELTest(String fileName,String source,String model,boolean isJSONResult) {
+		this.fileName = fileName;
 		this.source = source;
 		this.model = model;
 		this.resultMap = ELTest.resultMap(model, source,
@@ -87,7 +91,7 @@ public class AutoELTest {
 		String expect = resultMap.get("#expect");
 		String value = resultMap.get(type);
 				Assert.assertEquals(type + "运行结果有误：\n#"
-						+ source+"\n#"+this.model+'\n', expect, value);
+						+ source+"\n#"+this.model+"\n#"+this.fileName+'\n', expect, value);
 	}
 	private static Document loadXMLBySource(InputStream text, String id)
 			throws IOException, SAXException {
@@ -134,7 +138,7 @@ public class AutoELTest {
 				String isJSONResult = case0.getAttribute("json");
 				String source = getChildContent(case0, "source",case0.getTextContent());
 				String model =getChildContent(case0, "model",defaultModel);
-				result.add(new Object[] { source, model,
+				result.add(new Object[] {path, source, model,
 						isJSONResult.equals("true") });
 			}
 			caseMap.put(title, result);

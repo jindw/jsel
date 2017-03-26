@@ -35,9 +35,10 @@ public class OptimizeExpressionImpl extends ExpressionImpl {
 	}
 	/**
 	 * 生成内部优化的表达式
-	 * @param el
-	 * @param calculater
-	 * @return
+	 * @param el 源表达式
+	 * @param factory 表达式工场
+	 * @param calculater 静态值计算器
+	 * @return 优化后的表达式
 	 */
 	public static Expression create(final ExpressionToken el,ExpressionFactory factory,
 			OperationStrategy calculater) {

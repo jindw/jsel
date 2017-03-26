@@ -50,12 +50,9 @@ public class OperationStrategyImpl implements OperationStrategy {
 		}
 	}
 
-	/**
-	 * @param arg1
-	 * @param arg2
+	/*
 	 * @see <a
 	 *      href="http://www.ecma-international.org/publications/standards/Ecma-262.htm">Ecma262</a>
-	 * @return
 	 */
 	protected boolean compare(Object arg1, Object arg2, int type) {
 		if (arg1 == null) {

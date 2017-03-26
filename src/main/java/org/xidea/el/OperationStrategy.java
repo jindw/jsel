@@ -16,7 +16,7 @@ import java.util.Map;
 public interface OperationStrategy {
 
 	/**
-	 * @param op 操作符对象
+	 * @param token 操作符+左右子表达式
 	 * @param vs 运算变量表
 	 * @return 运算结果
 	 * @see org.xidea.el.impl.OperationStrategyImpl#evaluate

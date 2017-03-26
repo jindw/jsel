@@ -348,7 +348,10 @@ class JSGlobal implements Invocable {
 		if (text.length() > 0) {
 			Matcher matcher = FLOAT_PARTTERN.matcher(text);
 			if (matcher.find()) {
-				return Double.parseDouble(matcher.group(0));
+				text = matcher.group(0);
+				if(text.length()>0){
+					return Double.parseDouble(text);
+				}
 			}
 		}
 		return Double.NaN;

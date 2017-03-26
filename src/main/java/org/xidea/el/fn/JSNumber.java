@@ -11,9 +11,9 @@ class JSNumber extends JSObject implements Invocable {
 		df.setMinimumFractionDigits(p);
 		df.setMaximumFractionDigits(p);
 		df.setGroupingUsed(false);
-		if(thiz.doubleValue() == 0.0){
-			thiz = 0.0;
-		}
+		//if(thiz.doubleValue() == 0.0){
+		//	thiz = 0.0;
+		//}
 		return df.format(thiz);
 	}
 

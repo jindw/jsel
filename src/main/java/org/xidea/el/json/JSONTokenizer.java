@@ -372,9 +372,6 @@ public class JSONTokenizer {
 
 	}
 
-	/**
-	 * {@link Decompiler#printSourceString
-	 */
 	protected String findString() {
 		char quoteChar = value.charAt(start++);
 		StringBuilder buf = new StringBuilder();
