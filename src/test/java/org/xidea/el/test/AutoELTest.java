@@ -1,6 +1,7 @@
 package org.xidea.el.test;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -44,20 +45,16 @@ public class AutoELTest {
 			"string-case.xml", "math-case.xml" };
 	static Collection<Object[]> params = null;
 
-	private String source;
 
 	private Map<String, String> resultMap;
 
-	private String model;
 
-	private String fileName;
-
-	@Parameters
+	@Parameters(name="{index} -{0}")
 	public static Collection<Object[]> getParams() {
 		if (params == null) {
 			ArrayList<Object[]> rtv = new ArrayList<Object[]>();
 			for (String file : casefiles) {
-				for (List<Object[]> args : loadCases(file).values()) {
+				for (List<TestCase[]> args : loadCases(file).values()) {
 					rtv.addAll(args);
 				}
 			}
@@ -65,16 +62,33 @@ public class AutoELTest {
 		}
 		return params;
 	}
-
+	TestCase testCase;
 	// public AutoTest(){}
-	public AutoELTest(String fileName,String source,String model,boolean isJSONResult) {
-		this.fileName = fileName;
-		this.source = source;
-		this.model = model;
-		this.resultMap = ELTest.resultMap(model, source,
-				isJSONResult);
+	public AutoELTest(TestCase testCase) {
+		this.testCase = testCase;
+		this.resultMap = ELTest.resultMap(testCase.model, testCase.source,
+				testCase.isJSONResult);
 	}
 
+	static class TestCase{
+
+		private String title ;
+		private String source;
+		private String model;
+		private String fileName;
+		private boolean isJSONResult;
+		TestCase(String title,String fileName,String source,String model,boolean isJSONResult){
+			this.fileName = fileName;
+			this.source = source;
+			this.model = model;
+
+			this.title = title;
+			this.isJSONResult = isJSONResult;
+		}
+		public String toString(){
+			return fileName+'#'+title;
+		}
+	}
 	@Test
 	public void testJava() throws IOException {
 		test("java");
@@ -91,7 +105,7 @@ public class AutoELTest {
 		String expect = resultMap.get("#expect");
 		String value = resultMap.get(type);
 				Assert.assertEquals(type + "运行结果有误：\n#"
-						+ source+"\n#"+this.model+"\n#"+this.fileName+'\n', expect, value);
+						+ testCase.source+"\n#"+testCase.model+"\n#"+testCase.fileName+'\n', expect, value);
 	}
 	private static Document loadXMLBySource(InputStream text, String id)
 			throws IOException, SAXException {
@@ -116,14 +130,15 @@ public class AutoELTest {
 		}
 
 	}
-	private static Map<String, List<Object[]>> loadCases(String path) {
-		LinkedHashMap<String, List<Object[]>> caseMap = new LinkedHashMap<String, List<Object[]>>();
+	private static Map<String, List<TestCase[]>> loadCases(String path) {
+		LinkedHashMap<String, List<TestCase[]>> caseMap = new LinkedHashMap<String, List<TestCase[]>>();
 		Document doc= null;
 		try {
-			InputStream in = AutoELTest.class.getResourceAsStream(path);
+			InputStream in = new FileInputStream(new File(ELTest.projectRoot,"src/test/resources/org/xidea/el/test/"+path));
 			doc = loadXMLBySource(in, path);
 			//doc = ParseUtil.loadXML(AutoELTest.class.getResource(path).toURI().toString());
 		} catch (Exception e1) {
+			e1.printStackTrace();
 			throw new RuntimeException("load test cases xml failure:" + path);
 		}
 		NodeList units = doc.getElementsByTagName("unit");
@@ -132,14 +147,16 @@ public class AutoELTest {
 			String title = unit.getAttribute("title");
 			NodeList ns = unit.getElementsByTagName("case");
 			String defaultModel = getChildContent(unit, "model","{}");
-			ArrayList<Object[]> result = new ArrayList<Object[]>();
+			ArrayList<TestCase[]> result = new ArrayList<TestCase[]>();
+
 			for (int j = 0; j < ns.getLength(); j++) {
 				Element case0 = (Element) ns.item(j);
 				String isJSONResult = case0.getAttribute("json");
+				String title2 = title+'/'+case0.getAttribute("title");
 				String source = getChildContent(case0, "source",case0.getTextContent());
 				String model =getChildContent(case0, "model",defaultModel);
-				result.add(new Object[] {path, source, model,
-						isJSONResult.equals("true") });
+				TestCase[] args = new TestCase[]{new TestCase(title2,path, source, model,isJSONResult.equals("true") )};
+				result.add(args);
 			}
 			caseMap.put(title, result);
 		}
@@ -172,8 +189,8 @@ public class AutoELTest {
 
 			ArrayList<Object> allResult = new ArrayList<Object>();
 			for (String file : casefiles) {
-				Map<String, List<Object[]>> cases = loadCases(file);
-				for (Map.Entry<String, List<Object[]>> unitEntry : cases
+				Map<String, List<TestCase[]>> cases = loadCases(file);
+				for (Map.Entry<String, List<TestCase[]>> unitEntry : cases
 						.entrySet()) {
 					String title = unitEntry.getKey();
 					ArrayList<Object> unitResult = new ArrayList<Object>();

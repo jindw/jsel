@@ -1,7 +1,7 @@
 package org.xidea.el.impl.test;
 
-import junit.framework.Assert;
 
+import org.junit.Assert;
 import org.junit.Test;
 import org.xidea.el.ExpressionFactory;
 import org.xidea.el.impl.ExpressionFactoryImpl;

@@ -1,7 +1,10 @@
 package org.xidea.el.test;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -22,15 +25,21 @@ import org.xidea.el.json.JSONDecoder;
 import org.xidea.el.json.JSONEncoder;
 public class ELTest {
 	private static ScriptEngine js = new ScriptEngineManager().getEngineByExtension("js");
+	public static final File projectRoot ;
 	static{
+		URL url = ELTest.class.getResource("/");
+		
 		try {
-			js.eval(new InputStreamReader(ELTest.class.getResourceAsStream("js-java-proxy.js")));
+			File root = new File(url.toURI());
+			while(!new File(root,"package.json").exists())root = root.getParentFile();
+			projectRoot = root;
+			js.eval(new InputStreamReader(new FileInputStream(new File(projectRoot,"src/test/resources/org/xidea/el/test/java-proxy.js"))));
 			js.eval("var Expression = require('js-el').Expression;");
 			js.eval("function parseEL(el){"
 					+ "return new Expression(el).token;}");
-		} catch (ScriptException e) {
+		} catch (Exception e) {
 			// TODO Auto-generated catch block
-			e.printStackTrace();
+			throw new RuntimeException(e);
 		}
 	}
 	private static ExpressionFactory optimizedFactory = new ExpressionFactoryImpl();

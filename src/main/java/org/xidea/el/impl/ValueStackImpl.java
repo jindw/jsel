@@ -8,6 +8,21 @@ public class ValueStackImpl implements Map<String, Object> {
 	protected Object[] stack;
 
 	public ValueStackImpl(Object... stack) {
+		if(stack.length >=1 ){
+			initialize(stack);
+		}
+	}
+
+	protected void initialize(Object... stack) {
+		if(stack[0]  instanceof ValueStackImpl) {
+            Object[] firstStack = ((ValueStackImpl) stack[0]).stack;
+            Object[] newStack = new Object[stack.length + firstStack.length - 1];
+            if (stack.length > 1) {
+                System.arraycopy(firstStack, 0, newStack, 0, firstStack.length);
+                System.arraycopy(stack, 1, newStack, firstStack.length, stack.length - 1);
+            }
+            stack = newStack;
+        }
 		this.stack = stack;
 	}
 
@@ -101,8 +116,10 @@ class RefrenceStackImpl extends ValueStackImpl {
 		int i = stack.length;
 		while (i-- > 0) {
 			Object context = stack[i];
-			if (context instanceof Map<?,?>) {
-				return new ReferenceImpl(context, key);
+			if (context instanceof Map<?,?> ) {
+				if(((Map<?,?>)context).containsKey(key)) {
+					return new ReferenceImpl(context, key);
+				}
 			} else if (ReflectUtil.getPropertyClass(context.getClass(), key) != null) {
 				return new ReferenceImpl(context, key);
 			}

@@ -2,6 +2,8 @@ package org.xidea.el.json.test;
 
 import static org.junit.Assert.assertEquals;
 
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.StringWriter;
@@ -11,14 +13,16 @@ import org.junit.Test;
 import org.xidea.el.impl.ExpressionImpl;
 import org.xidea.el.json.JSONDecoder;
 import org.xidea.el.json.JSONEncoder;
+import org.xidea.el.test.ELTest;
 
 @SuppressWarnings({"unused","unchecked"})
 public class JSONTest {
 
-	static String getText(String file) {
+	private static String getText(String file) {
 		try {
-			InputStreamReader in = new InputStreamReader(JSONTest.class
-					.getResourceAsStream(file), "utf8");
+			InputStreamReader in = new InputStreamReader(
+					new FileInputStream(new File(ELTest.projectRoot,"src/test/resources/org/xidea/el/json/test/"+file))
+					, "utf8");
 			char[] buf = new char[1024];
 			StringWriter out = new StringWriter();
 			int len;

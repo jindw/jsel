@@ -3,6 +3,7 @@ package org.xidea.el.fn;
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -62,6 +63,8 @@ class JSGlobal implements Invocable {
 		calculater.addVar("decodeURI",new JSGlobal(401));
 		calculater.addVar("encodeURIComponent", new JSGlobal(402));
 		calculater.addVar("decodeURIComponent", new JSGlobal(403));
+		/*===========Array 500+==================*/
+		calculater.addVar("Array", new JSGlobal(500));
 
 		/*==========Others ===========*/
 		calculater.addVar("Infinity", Double.POSITIVE_INFINITY);
@@ -75,6 +78,7 @@ class JSGlobal implements Invocable {
 
 	public String toString(){
 		switch (type) {
+		case 500:return "Array";
 		//encodeURI,decodeURI,encodeURIConponent,decodeURIComponent
 		case 400:return "encodeURI";
 		case 401:return "decodeURI";
@@ -97,6 +101,14 @@ class JSGlobal implements Invocable {
 	public Object invoke(Object thiz, Object... args) throws Exception {
 
 		switch (type) {
+		case 500://encodeURI
+			if(args.length == 1 && args[0] instanceof Number){
+				double n = ((Number) args[0]).doubleValue();
+				if(n == (int)n && n >=0){
+					return new Object[(int)n];
+				}
+			}
+			return args;
 		//encodeURI,decodeURI,encodeURIConponent,decodeURIComponent
 		case 400://encodeURI
 		case 401://decodeURI

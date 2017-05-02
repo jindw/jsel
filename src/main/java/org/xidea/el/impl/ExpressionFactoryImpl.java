@@ -161,7 +161,7 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 	}
 
 	@SuppressWarnings("unchecked")
-	public <T> T wrapAsContext(Object context) {
+	public Map<String,Object> wrapAsContext(Object context) {
 		Map<String, Object> valueStack;
 		if (context instanceof Map) {
 			valueStack = (Map<String, Object>) context;
@@ -170,7 +170,7 @@ public class ExpressionFactoryImpl implements ExpressionFactory {
 		} else {
 			valueStack = new ValueStackImpl(context);
 		}
-		return (T) valueStack;
+		return valueStack;
 	}
 }
 
