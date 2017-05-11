@@ -35,7 +35,7 @@ public class JSONTokenizerTest {
 
 	private void doTest(String el) throws ScriptException {
 		Float actual = ((Number) ExpressionFactoryImpl.getInstance().create(el).evaluate("")).floatValue();
-		System.out.println("acture"+actual);
+		//System.out.println("acture"+actual);
 		Float expected = ((Number)new ScriptEngineManager().getEngineByExtension("js").eval(el)).floatValue();
 		Assert.assertEquals( toInt(expected),toInt(actual));
 	}

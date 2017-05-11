@@ -160,8 +160,8 @@ public class ELTest {
 		String evaljs = "(function(){with(" + contextJSON
 				+ "){return JSON.stringify(" + source + ")}})()";
 		String expect = (String) js.eval(evaljs);
-		System.out.println(evaljs);
-		System.out.println(expect);
+		//System.out.println(evaljs);
+		//System.out.println(expect);
 		return normalizeJSON(expect,false);
 	}
 
@@ -182,13 +182,13 @@ public class ELTest {
 
 	@SuppressWarnings("unchecked")
 	private static String checkOptimizedLiteParse(String source) throws ScriptException {
-		System.out.println(source);
-		System.out.println(encoder.encode(source,new StringBuilder()).toString() );
+		//System.out.println(source);
+		//System.out.println(encoder.encode(source,new StringBuilder()).toString() );
 		final String litecode = (String) js.eval("JSON.stringify(parseEL(" + JSONEncoder.encode(source) + "))");
 		final Object javacode = optimizedFactory.parse(source);
 
-		System.out.println(litecode);
-		System.out.println(javacode);
+		//System.out.println(litecode);
+		//System.out.println(javacode);
 		TokenImpl jsc = TokenImpl.toToken((List<Object>) JSONDecoder
 				.decode(litecode));
 		jsc = jsc.optimize(ExpressionFactoryImpl.getInstance()

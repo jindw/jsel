@@ -46,7 +46,7 @@ public class JSONDecoderTest {
 			JSONDecoderTest test1 = decoder.decodeObject(str1,
 					(Type) JSONDecoderTest.class);
 			str2 = JSONEncoder.encode(test1);
-			System.out.println(str2);
+			//System.out.println(str2);
 			assertEquals(str1, str2);
 			assertFalse(test1 == test0);
 
@@ -57,9 +57,9 @@ public class JSONDecoderTest {
 					(Type) JSONDecoderTest.class);
 			str4 = JSONEncoder.encode(test3);
 
-			System.out.println("!!!");
-			System.out.println(str3);
-			System.out.println(str4);
+			//System.out.println("!!!");
+			//System.out.println(str3);
+			//System.out.println(str4);
 			assertEquals(str3, str4);
 		}
 //		{

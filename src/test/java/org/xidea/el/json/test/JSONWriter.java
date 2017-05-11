@@ -26,7 +26,7 @@ public class JSONWriter {
         this.emitClassName = emitClassName;
     }
     
-    public JSONWriter() {
+    public JSONWriter( ) {
         this(true);
     }
 

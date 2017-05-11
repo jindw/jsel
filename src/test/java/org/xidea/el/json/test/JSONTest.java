@@ -95,7 +95,7 @@ public class JSONTest {
 			System.out.println("jsr-elr:" + jsr + "-" + elr);
 			System.out.println("js-el:" + (jsc + jsr) + "-" + (elc + elr));
 			JSONWriter writer = new JSONWriter();
-			//assertEquals(writer.write(jso), writer.write(elo));
+			assertEquals(writer.write(jso), writer.write(elo));
 		}
 	}
 
