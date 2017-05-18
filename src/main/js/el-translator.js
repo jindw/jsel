@@ -140,6 +140,11 @@ function stringifyInfix(el,context){
 	}
 	value1 = addELQute(el,el1,value1)
 	value2 = addELQute(el,el2,null,value2)
+	if(opc == '-' || opc == '+'){//-1--2=> -1- -2
+		if(value2.indexOf(opc) == 0){
+			opc += ' ';
+		}
+	}
 	return value1 + opc + value2;
 }
 /**

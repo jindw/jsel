@@ -13,8 +13,8 @@
 		</javac>
 	</target>
 	<target name="package" depends="init,compile">
-		<jar destfile="bin/JSEL.jar" compress="true" encoding="UTF-8">
-			<fileset dir="bin">
+		<jar destfile="target/JSEL.jar" compress="true" encoding="UTF-8">
+			<fileset dir="target/classes">
 				<include name="org/xidea/el/**/*.class" />
 				<exclude name="**/*.js" />
 				<exclude name="**/test/**/*.*" />
