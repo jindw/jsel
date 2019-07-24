@@ -120,6 +120,16 @@ function stringifyInfix(el,context){
 		}else{
 			return value1.slice(0,-1)+','+value2
 		}
+
+	case OP_EXTRACT:
+		if("[]"==value1){
+			return "[..."+value2+"]"
+		}else if("{}"==value1){
+			return "{..."+value2+"}"
+		}else{
+			var postfix = value1.charAt() == '{'?'}':']'
+			return value1.slice(0,-1)+',...'+value2+postfix;
+		}
     case OP_QUESTION:
     	//1?2:3 => [QUESTION_SELECT,
     	// 					[QUESTION,[CONSTANTS,1],[CONSTANTS,2]],
@@ -177,4 +187,5 @@ var VALUE_CONSTANTS=require('./expression-token').VALUE_CONSTANTS;
 var VALUE_LIST=require('./expression-token').VALUE_LIST;
 var VALUE_MAP=require('./expression-token').VALUE_MAP;
 var VALUE_VAR=require('./expression-token').VALUE_VAR;
+var OP_EXTRACT = require('./expression-token').OP_EXTRACT;
 }

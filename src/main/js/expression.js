@@ -243,6 +243,18 @@ function _evaluate(item,context){
     case OP_PUT:
         arg1[getTokenParam(item)]= arg2;
         return arg1;
+    case OP_EXTRACT:
+        //console.log('extract:\t',JSON.stringify(arg1),arg2,arg1 instanceof Array)
+        if(arg1 instanceof Array){
+            arg1.push.apply(arg1,arg2); 
+        }else{
+           for(var n in arg2){
+              arg1[n]= arg2[n];
+           } 
+        }
+        
+        return arg1;
+
     }
 }
 
@@ -305,6 +317,6 @@ var VALUE_CONSTANTS=require('./expression-token').VALUE_CONSTANTS;
 var VALUE_LIST=require('./expression-token').VALUE_LIST;
 var VALUE_MAP=require('./expression-token').VALUE_MAP;
 var VALUE_VAR=require('./expression-token').VALUE_VAR;
-
+var OP_EXTRACT = require('./expression-token').OP_EXTRACT;
 module.exports =Expression;
 Expression.Expression=Expression;

@@ -92,10 +92,14 @@ var fns = {
 		case '}':
 		case '(':// quote
 		case ')':
-		case '.':// prop
 		case '?':// 3op
 		case '~':
 		case '^':
+			break;
+		case '.':// prop
+			if(next == '.' && this.value.charAt(end+1)){
+				end+=2;
+			}
 			break;
 		case '+':// 5op
 		case '-':
@@ -289,7 +293,10 @@ var fns = {
 				token[0] = type = OP_IN;
 			}
 		}
-		
+		if(type == OP_EXTRACT && this.previousType == OP_JOIN){
+			//console.log(token,this.previousType)
+			this.tokens.pop();
+		}
 		switch (type) {
 		case BRACKET_BEGIN:
 			this.status = STATUS_BEGIN;
@@ -559,4 +566,5 @@ var VALUE_CONSTANTS=require('./expression-token').VALUE_CONSTANTS;
 var VALUE_LIST=require('./expression-token').VALUE_LIST;
 var VALUE_MAP=require('./expression-token').VALUE_MAP;
 var VALUE_VAR=require('./expression-token').VALUE_VAR;
+var OP_EXTRACT = require('./expression-token').OP_EXTRACT;
 }

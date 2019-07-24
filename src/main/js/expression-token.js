@@ -45,6 +45,7 @@ var OP_QUESTION= 68;
 var OP_QUESTION_SELECT= 69;
 var OP_JOIN= 64;
 var OP_PUT= 65;
+var OP_EXTRACT= 66;//320;
 
 
 
@@ -121,6 +122,7 @@ addToken(OP_QUESTION_SELECT ,":");
 addToken(OP_JOIN   ,",");
 //与三元运算符共享字面值
 addToken(OP_PUT   ,":");
+addToken(OP_EXTRACT,'...');
 
 
 
@@ -457,6 +459,7 @@ exports.VALUE_CONSTANTS=VALUE_CONSTANTS;
 exports.VALUE_LIST=VALUE_LIST;
 exports.VALUE_MAP=VALUE_MAP;
 exports.VALUE_VAR=VALUE_VAR;
+exports.OP_EXTRACT = OP_EXTRACT;
 var evaluate=require('./expression').evaluate;
 var getPriority=require('./expression-tokenizer').getPriority;
 }
